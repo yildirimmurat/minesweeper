@@ -2,24 +2,25 @@
 #include <time.h>
 
 using namespace std;
+using namespace sf;
 
 int main() {
     srand(time(0));
 
-    sf::RenderWindow app(sf::VideoMode(400,400), "Minesweeper");
+    RenderWindow app(VideoMode(400,400), "Minesweeper");
 
     int w = 32;
     int grid[12][12];
     int sgrid[12][12]; 
     
-    sf::Texture t;
+    Texture t;
     t.loadFromFile("images/tiles.png");
-    sf::Sprite s(t);
+    Sprite s(t);
 
     for (int i = 1; i <= 10; i++) {
         for (int j = 1; j <= 10; j++) {
             sgrid[i][j] = 10;
-            if (rand()%5==0) grid[i][j] = 9;
+            if (rand() % 5 == 0) grid[i][j] = 9;
             else grid[i][j] = 0;
         }
     }
@@ -41,22 +42,30 @@ int main() {
     }
 
     while (app.isOpen()) {
-        sf::Event e;
+        Vector2i pos = Mouse::getPosition(app);
+        int x = pos.x/w;
+        int y = pos.y/w;
+
+        Event e;
         while (app.pollEvent(e)) {
-            if (e.type == sf::Event::Closed) {
+            if (e.type == Event::Closed) {
                 app.close();
             }
-        }
 
+            if (Mouse::isButtonPressed(Mouse::Left))
+            {
+                sgrid[x][y] = grid[x][y];
+            }
+            if (Mouse::isButtonPressed(Mouse::Right))
+            {
+                sgrid[x][y] = 11;
+            }
+        }
+        app.clear(Color::White);
         for(int i = 1; i<= 10; i++) {
             for (int j = 1; j <= 10; j++) {
-                sgrid[i][j] = grid[i][j];
-                // sf::RectangleShape rectangle;
-                // rectangle.setSize(sf::Vector2f(w, w));
-                // rectangle.setPosition(i*w, j*w);
-                // rectangle.setTexture(&t);
-                // app.draw(rectangle);
-                s.setTextureRect(sf::IntRect(sgrid[i][j]*w,0,w,w));
+                if (sgrid[x][y] == 9) sgrid[i][j] = grid[i][j];
+                s.setTextureRect(IntRect(sgrid[i][j]*w,0,w,w));
                 s.setPosition(i*w, j*w);
                 app.draw(s);
             }
