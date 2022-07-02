@@ -12,13 +12,31 @@ int main() {
     int grid[12][12];
     int sgrid[12][12]; 
     
-    sf::Texture emptyTexture;
-    emptyTexture.loadFromFile("images/0.png");
-    sf::Sprite s(emptyTexture);
+    sf::Texture t;
+    t.loadFromFile("images/tiles.png");
+    sf::Sprite s(t);
 
     for (int i = 1; i <= 10; i++) {
         for (int j = 1; j <= 10; j++) {
             sgrid[i][j] = 10;
+            if (rand()%5==0) grid[i][j] = 9;
+            else grid[i][j] = 0;
+        }
+    }
+
+    for (int i = 1; i <= 10; i++) {
+        for (int j = 1; j <= 10; j++) {
+            int n = 0;
+            if (grid[i][j] == 9) continue;
+            if (grid[i+1][j] == 9) n++;
+            if (grid[i][j+1] == 9) n++;
+            if (grid[i-1][j] == 9) n++;
+            if (grid[i][j-1] == 9) n++;
+            if (grid[i+1][j+1] == 9) n++;
+            if (grid[i-1][j-1] == 9) n++;
+            if (grid[i-1][j+1] == 9) n++;
+            if (grid[i+1][j-1] == 9) n++;
+            grid[i][j] = n;
         }
     }
 
@@ -32,11 +50,15 @@ int main() {
 
         for(int i = 1; i<= 10; i++) {
             for (int j = 1; j <= 10; j++) {
-                sf::RectangleShape rectangle;
-                rectangle.setSize(sf::Vector2f(w, w));
-                rectangle.setPosition(i*w, j*w);
-                rectangle.setTexture(&emptyTexture);
-                app.draw(rectangle);
+                sgrid[i][j] = grid[i][j];
+                // sf::RectangleShape rectangle;
+                // rectangle.setSize(sf::Vector2f(w, w));
+                // rectangle.setPosition(i*w, j*w);
+                // rectangle.setTexture(&t);
+                // app.draw(rectangle);
+                s.setTextureRect(sf::IntRect(sgrid[i][j]*w,0,w,w));
+                s.setPosition(i*w, j*w);
+                app.draw(s);
             }
         }
 
