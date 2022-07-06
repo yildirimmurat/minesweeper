@@ -1,3 +1,5 @@
 *.o
 sfml*
 history*
+test/
+.vscode/
